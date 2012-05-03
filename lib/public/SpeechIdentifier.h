@@ -2,16 +2,18 @@
 #define __SPEECHLIB_H__
 
 #include <string>
+#include <vector>
 
 #include "SpeechIdentifierImpl.h"
 #include "Text.h"
 
-using std::string;
-
 class SpeechIdentifier {
  public:
-  Text* SendAudio(void* audio) { return impl.SendAudio(audio); }
-  void NameIdentity(unsigned identity, const string& name) {
+  const std::vecotr<Text>* SendAudio(void* audio, unsigned length) {
+    return impl.SendAudio(audio, length);
+  }
+
+  void NameIdentity(const Identity& identity, const find::string& name) {
     impl.NameIdentity(identity, name);
   }
 
