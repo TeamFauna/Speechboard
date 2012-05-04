@@ -1,6 +1,7 @@
 #ifndef __SPEAKER_ID_ENGINE_H__
 #define __SPEAKER_ID_ENGINE_H__
 
+#include <kiss_fft.h>
 #include <string>
 
 class Identity;

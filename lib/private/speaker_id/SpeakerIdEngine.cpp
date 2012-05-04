@@ -1,7 +1,8 @@
 #include "SpeakerIdEngine.h"
 
 #include <cmath>
-#include <kiss_fft.h>
+
+#include "../utterance/Utterance.h"
 
 #define FFT_LEN 1024
 
