@@ -1,18 +1,22 @@
 #include <cstdio>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <vector>
 
 #include "FFT.h"
 #include "WindowFunction.h"
 
+using namespace std;
+
 #define FFT_LEN 1024
 
 struct Data {
-  float* audio;
-  unsigned length;
-  float spectrum[FFT_LEN];
+  vector<float> audio;
+  vector<float> spectrum;
 
   Data()
-      : audio(NULL)
-      , length(0) {
+      : spectrum(FFT_LEN) {
   }
 };
 
@@ -24,7 +28,7 @@ const unsigned NumTests = 10;
 const char Tests[NumTests][8] = {
   "N-A.raw",
   "N-E.raw",
-  "N-M.raw",
+  "N-N.raw",
   "N-S.raw",
   "N-T.raw",
   "Q-A.raw",
@@ -34,86 +38,109 @@ const char Tests[NumTests][8] = {
   "Q-T.raw"
 };
 
-void ReadRawAudioFile(Data& data, char* file_name);
+void ReadRawAudioFile(Data& data, string file_name);
 void OutputSubjectJSON(FILE* output, Data* data);
+
+FILE* test;
 
 int main() {
   FFT fft(FFT_LEN);
 
   Data data[NumSubjects][NumTests];
 
+  puts("Reading data...");
+
+  test = fopen("test.txt", "w");
+
   for (unsigned i = 0; i < NumMaleSubjects; i++) {
     for (unsigned j = 0; j < NumTests; j++) {
-      char file_name[64];
-      sprintf(file_name, "../../../data/Male%d/%s", i, Tests[j]);
+      stringstream ss;
+      ss << i;
+      string file_name = "../../../data/Male" + ss.str() + "/" + Tests[j];
       ReadRawAudioFile(data[i][j], file_name);
     }
   }
 
   for (unsigned i = 0; i < NumFemaleSubjects; i++) {
     for (unsigned j = 0; i < NumTests; j++) {
-      char file_name[64];
-      sprintf(file_name, "../../../data/Female%d/%s", i, Tests[j]);
+      stringstream ss;
+      ss << i;
+      string file_name = "../../../data/Female" + ss.str() + "/" + Tests[j];
       ReadRawAudioFile(data[i + NumMaleSubjects * NumTests][j], file_name);
     }
   }
 
+  puts("Transforming data...");
+
   for (unsigned i = 0; i < NumSubjects; i++) {
     for (unsigned j = 0; j < NumTests; j++) {
-      WindowFunction::Hann(data[i][j].audio, data[i][j].length);
-      fft.ComputeSpectrum(data[i][j].audio, data[i][j].length,
-                          data[i][j].spectrum);
+
+      for (unsigned k = 0; k < data[i][j].audio.size(); k++) {
+        fprintf(test, "%f,", data[i][j].audio[k]);
+      }
+      fputs("\n", test);
+
+      WindowFunction::Hann(data[i][j].audio);
+      fft.ComputeSpectrum(data[i][j].audio, data[i][j].spectrum);
     }
   }
+
+  fclose(test);
+
+  puts("Outputing data...");
 
   FILE* output = fopen("../../../data/tests.json", "w");
   fputs("{\n", output);
 
   for (unsigned i = 0; i < NumMaleSubjects; i++) {
-    fprintf(output, "\t'Male%d': {\n", i);
+    fprintf(output, "\t\"Male%d\": {\n", i);
     OutputSubjectJSON(output, data[i]);
     fputs("\t},\n", output);
   }
 
   for (unsigned i = 0; i < NumFemaleSubjects; i++) {
-    fprintf(output, "\t'Female%d': {\n", i);
+    fprintf(output, "\t\"Female%d\": {\n", i);
     OutputSubjectJSON(output, data[i + NumMaleSubjects*NumTests]);
-    fputs("\t},\n", output);
+    fputs("\t}", output);
+    if (i < NumFemaleSubjects - 1) {
+      fputs(",", output);
+    }
+    fputs("\n", output);
   }
 
   fputs("}\n", output);
   fclose(output);
 
-  for (unsigned i = 0; i < NumSubjects; i++) {
-    for (unsigned j = 0; j < NumTests; j++) {
-      delete[] data[i][j].audio;
-    }
-  }
+  puts("Cleaning up...");
 }
 
-void ReadRawAudioFile(Data& data, char* file_name) {
-  FILE* file = fopen(file_name, "rb");
-  
-  fseek(file, 0, SEEK_END);
-  data.length = ftell(file) / sizeof(float);
-  fseek(file, 0, SEEK_SET);
+void ReadRawAudioFile(Data& data, string file_name) {
+  ifstream file;
+  file.open(file_name.c_str(), ios::binary);
 
-  data.audio = new float[data.length];
-  fread(data.audio, sizeof(float), data.length, file);
+  file.seekg(0, ios::end);
+  data.audio = vector<float>((file.tellg() / sizeof(float)));
+  file.seekg(0, ios::beg);
 
-  fclose(file);
+  file.read((char*)&data.audio[0], data.audio.size() * sizeof(float));
+
+  file.close();
 }
 
 void OutputSubjectJSON(FILE* output, Data* data) {
   for (unsigned i = 0; i < NumTests; i++) {
-    fprintf(output, "\t\t'test': '%c%c%c',\n", Tests[i][0], Tests[i][1],
+    fprintf(output, "\t\t\"%c%c%c\": [\n", Tests[i][0], Tests[i][1],
             Tests[i][2]);
 
-    fputs("\t\t'data': [\n\t\t\t", output);
-    for (unsigned j = 0; j < data[i].length; j++) {
-      fprintf(output, "%d,", data[i].audio[j]);
+    fprintf(output, "\t\t\t%f", data[i].spectrum[0]);
+    for (unsigned j = 1; j < FFT_LEN; j++) {
+      fprintf(output, ",%f", data[i].spectrum[j]);
     }
-    fputs("\n\t\t],\n", output);
+    fputs("\n\t\t]", output);
+    if (i < NumTests - 1) {
+      fputs(",", output);
+    }
+    fputs("\n", output);
   }
 }
 

@@ -2,6 +2,7 @@
 #define __FFT_H__
 
 #include <kiss_fft.h>
+#include <vector>
 
 class FFT {
  public:
@@ -9,6 +10,7 @@ class FFT {
   ~FFT();
 
   void ComputeSpectrum(float* audio, unsigned length, float* spectrum);
+  void ComputeSpectrum(std::vector<float> audio, std::vector<float> spectrum);
 
  private:
   unsigned length_;

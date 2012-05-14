@@ -5,9 +5,6 @@
 
 class Identity {
  public:
-  Identity() :
-      identity_(0) {}
-
   Identity(unsigned identity) :
       identity_(identity) {}
 
@@ -25,11 +22,6 @@ class Identity {
 
 class Text {
  public:
-  Text() {}
-
-  Text(const Identity& identity) :
-      identity_(identity) {}
-
   Text(const Identity& identity, const std::string& text) :
       identity_(identity),
       text_(text) {}

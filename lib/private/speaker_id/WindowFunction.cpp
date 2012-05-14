@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+using std::vector;
+
 const float PI = 3.1415926535;
 
 void WindowFunction::Hann(float* data, unsigned length) {
@@ -9,6 +11,10 @@ void WindowFunction::Hann(float* data, unsigned length) {
     float val = 0.5 * (1 - cos((2 * PI * i) / (length - 1)));
     data[i] = val * data[i];
   }
+}
+
+void WindowFunction::Hann(vector<float> data) {
+  Hann(&data[0], data.size());
 }
 
 void WindowFunction::Hamming(float* data, unsigned length) {

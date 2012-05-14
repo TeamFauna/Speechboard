@@ -1,5 +1,9 @@
 #include "FFT.h"
 
+#include <cmath>
+
+using std::vector;
+
 FFT::FFT(unsigned length) {
   length_ = length;
   fft_ = kiss_fft_alloc(length, 0, NULL, NULL);
@@ -11,10 +15,26 @@ FFT::~FFT() {
   kiss_fft_free(ifft_);
 }
 
+void Normalize(float* audio, unsigned length) {
+  float max;
+
+  for (unsigned i = 0; i < length; i++) {
+    if (abs(audio[i]) > max) {
+      max = abs(audio[i]);
+    }
+  }
+
+  for (unsigned i = 0; i < length; i++) {
+    audio[i] /= max;
+  }
+}
+
 void FFT::ComputeSpectrum(float* audio, unsigned audio_length,
                           float* spectrum) {
   kiss_fft_cpx input[length_];
   kiss_fft_cpx output[length_];
+
+  Normalize(audio, audio_length);
 
   memset(spectrum, 0, length_/2 * sizeof(float));
 
@@ -55,3 +75,8 @@ void FFT::ComputeSpectrum(float* audio, unsigned audio_length,
   }
 
 }
+
+void FFT::ComputeSpectrum(vector<float> audio, vector<float> spectrum) {
+  ComputeSpectrum(&audio[0], audio.size(), &spectrum[0]);
+}
+
