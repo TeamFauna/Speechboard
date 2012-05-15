@@ -1,26 +1,33 @@
 #include "FFT.h"
 
-#include <cmath>
-
 using std::vector;
 
+FILE* test;
+
 FFT::FFT(unsigned length) {
+  test = fopen("test.txt", "w");
+
   length_ = length;
   fft_ = kiss_fft_alloc(length, 0, NULL, NULL);
   ifft_ = kiss_fft_alloc(length, 1, NULL, NULL);
 }
 
 FFT::~FFT() {
+  fclose(test);
+
   kiss_fft_free(fft_);
   kiss_fft_free(ifft_);
 }
+
+// XXX: FIXME
+#define ABS(f) (f >= 0.0f ? f : -f)
 
 void Normalize(float* audio, unsigned length) {
   float max = 0.0f;
 
   for (unsigned i = 0; i < length; i++) {
-    if (abs(audio[i]) > max) {
-      max = abs(audio[i]);
+    if (ABS(audio[i]) > max) {
+      max = ABS(audio[i]);
     }
   }
 
@@ -73,10 +80,15 @@ void FFT::ComputeSpectrum(float* audio, unsigned audio_length,
                           output[j].i * output[j].i) / segments;
     }
   }
-
 }
 
-void FFT::ComputeSpectrum(vector<float> audio, vector<float> spectrum) {
+void FFT::ComputeSpectrum(vector<float> audio, vector<float>& spectrum) {
   ComputeSpectrum(&audio[0], audio.size(), &spectrum[0]);
+
+  for (unsigned i = 0; i < spectrum.size(); i++) {
+    fprintf(test, "%f,", spectrum[i]);
+  }
+  fputs("\n", test);
+
 }
 

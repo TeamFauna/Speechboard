@@ -10,7 +10,7 @@ class FFT {
   ~FFT();
 
   void ComputeSpectrum(float* audio, unsigned length, float* spectrum);
-  void ComputeSpectrum(std::vector<float> audio, std::vector<float> spectrum);
+  void ComputeSpectrum(std::vector<float> audio, std::vector<float>& spectrum);
 
  private:
   unsigned length_;

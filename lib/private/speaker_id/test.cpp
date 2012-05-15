@@ -41,16 +41,12 @@ const char Tests[NumTests][8] = {
 void ReadRawAudioFile(Data& data, string file_name);
 void OutputSubjectJSON(FILE* output, Data* data);
 
-FILE* test;
-
 int main() {
   FFT fft(FFT_LEN);
 
   Data data[NumSubjects][NumTests];
 
   puts("Reading data...");
-
-  test = fopen("test.txt", "w");
 
   for (unsigned i = 0; i < NumMaleSubjects; i++) {
     for (unsigned j = 0; j < NumTests; j++) {
@@ -74,18 +70,10 @@ int main() {
 
   for (unsigned i = 0; i < NumSubjects; i++) {
     for (unsigned j = 0; j < NumTests; j++) {
-
-      for (unsigned k = 0; k < data[i][j].audio.size(); k++) {
-        fprintf(test, "%f,", data[i][j].audio[k]);
-      }
-      fputs("\n", test);
-
       WindowFunction::Hann(data[i][j].audio);
       fft.ComputeSpectrum(data[i][j].audio, data[i][j].spectrum);
     }
   }
-
-  fclose(test);
 
   puts("Outputing data...");
 
@@ -95,7 +83,11 @@ int main() {
   for (unsigned i = 0; i < NumMaleSubjects; i++) {
     fprintf(output, "\t\"Male%d\": {\n", i);
     OutputSubjectJSON(output, data[i]);
-    fputs("\t},\n", output);
+    fputs("\t}", output);
+    if (!(NumFemaleSubjects == 0 && i == NumMaleSubjects - 1)) {
+      fputs(",", output);
+    }
+    fputs("\n", output);
   }
 
   for (unsigned i = 0; i < NumFemaleSubjects; i++) {
