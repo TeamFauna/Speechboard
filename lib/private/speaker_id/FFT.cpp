@@ -16,7 +16,7 @@ FFT::~FFT() {
 }
 
 void Normalize(float* audio, unsigned length) {
-  float max;
+  float max = 0.0f;
 
   for (unsigned i = 0; i < length; i++) {
     if (abs(audio[i]) > max) {
