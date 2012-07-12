@@ -1,0 +1,30 @@
+{
+"source": "unqiueidentifier",
+"volume": 3.1,
+"phrases":
+[
+	{
+		"text": "Will Huggles",
+		"confidence": 0.63,
+		"alternatives":
+		[
+			"Will Hughes"
+		]
+	},
+	{
+		"text": "is a fine",
+		"confidence": 0.93,
+		"alternatives": [ ]
+	},
+	{
+		"text": "young man.",
+		"confidence": 0.76,
+		"alternatives":
+		[
+			"fun ham",
+			"younging",
+			"running"
+		]
+	}
+]
+}
