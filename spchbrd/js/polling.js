@@ -14,7 +14,7 @@ function Poller(interval, callback) {
     }
 
     for (var i = 0; i < json.length; i++) {
-      var id = json[i].id;
+      id = json[i].id;
       if (id > this.id) {
         callback(json[i]);
         this.id = id;
@@ -37,7 +37,7 @@ var emailToImg = {
 };
 
 function GetPicture(speaker) {
-  
+
 }
 
 function CreateTextBox(speaker, text) {
