@@ -1,15 +1,24 @@
 function Poller(interval, callback) {
-  this.id = 0;
+  this.id = -1;
 
   function poll() {
     var req = new XMLHttpRequest();
-    req.open("GET", "/speech?id=" + this.id, false);
+    var id = this.id < 0 ? 0 : this.id;
+    req.open("GET", "/speech?id=" + id, false);
     req.send();
     console.log(req);
+
     var json = JSON.parse(req.responseText);
-    if (json && json.length) {
-      this.id = json[json.length-1].id;
-      callback(json);
+    if (!json || json.length == 0) {
+      return;
+    }
+
+    for (var i = 0; i < json.length; i++) {
+      var id = json[i].id;
+      if (id > this.id) {
+        callback(json[i]);
+        this.id = id;
+      }
     }
   }
 
