@@ -1,10 +1,17 @@
 function Poller(interval, callback) {
   function poll() {
-    $.get('/speech', function(data) {
+    /*
+    $.get('/speech', {}, function(data) {
       if (data.length > 0) {
         callback(data);
       }
     });
+    */
+    var req = new XMLHttpRequest();
+    req.open("GET", "/speech", false);
+    req.send();
+    console.log(req);
+    callback(req.responseText);
   }
 
   this.start = function() {
