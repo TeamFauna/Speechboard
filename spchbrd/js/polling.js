@@ -27,16 +27,16 @@ function Poller(interval, callback) {
   };
 }
 
-var emailToImg = {
-  'deadhead.russell@gmail.com': 'russell',
-  'zetalmac@gmail.com': 'noah',
-  'Noah': 'noah',
-  'willhughes01@gmail.com': 'will',
-  'munnand@gmail.com': 'munn'
+var emailToName = {
+  'deadhead.russell@gmail.com': 'Russell',
+  'zetalmac@gmail.com': 'Noah',
+  'Noah': 'Noah',
+  'willhughes01@gmail.com': 'Will',
+  'munnand@gmail.com': 'Munn'
 };
 
 function CreateAvatar(speaker) {
-  var path = 'js/' + emailToImg[speaker] + '.jpg';
+  var path = 'img/' + emailToName[speaker] + '.jpg';
   var img = document.createElement('Img');
   img.src = path;
 
@@ -58,7 +58,7 @@ function CreateTextBox(speaker, text) {
   var speakerSpan = document.createElement('Div');
     speakerSpan.className = 'speaker';
   speakerSpan.style.fontWeight = 'bold';
-  speakerSpan.appendChild(document.createTextNode(speaker + ':'));
+  speakerSpan.appendChild(document.createTextNode(emailToName[speaker] + ':'));
   rightDiv.appendChild(speakerSpan);
 
   var textSpan = document.createElement('Span');
