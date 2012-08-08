@@ -15,12 +15,10 @@
 # limitations under the License.
 #
 import webapp2
-import jinja2
 import os
 from google.appengine.ext import db
 
-templates = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+
     
     
 class Fragment(db.Model):
@@ -31,10 +29,9 @@ class Fragment(db.Model):
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        template = templates.get_template('index.html')
-        self.response.out.write(template.render({})) #we have no template vars yet
+        self.response.out.write(open("index.html").read()) #we have no template vars yet
         
-class SpeechHander(webapp2.RequestHandler):
+class SpeechHandler(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/json'
         self.response.out.write("implementing this!")
