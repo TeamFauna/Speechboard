@@ -34,7 +34,7 @@ public class SpeechBoardListener implements RecognitionListener {
 	public void onError(int error) {
 		// TODO Auto-generated method stub
 		Log.d("ha", "onError " + Integer.toString(error));
-		if (error == 7) {
+		if (error == 7 || error == 6) {
 			mAct.onEndOfResults(null);
 		}
 	}

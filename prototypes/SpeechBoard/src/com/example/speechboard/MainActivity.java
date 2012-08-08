@@ -19,6 +19,8 @@ package com.example.speechboard;
 import com.example.speechboard.R;
 import com.example.speechboard.SpeechBoardListener;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,6 +31,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -43,7 +46,23 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.HttpParams;
+import org.json.JSONObject;
 
 /**
  * Sample code that invokes the speech recognition intent API.
@@ -66,6 +85,8 @@ public class MainActivity extends Activity implements OnClickListener {
     private RecognitionListener mListener;
     
     private boolean mRunning;
+    
+    private String mUser;
     
 
     /**
@@ -96,6 +117,7 @@ public class MainActivity extends Activity implements OnClickListener {
         
         mSpeaker.setRecognitionListener(mListener);
         
+        mUser = getAccountName();
         
 
         // Check to see if a recognition activity is present
@@ -115,6 +137,51 @@ public class MainActivity extends Activity implements OnClickListener {
         refreshVoiceSettings();
     }
     
+    
+    
+    public static HttpResponse makeRequest(String path, List<NameValuePair> params)throws Exception 
+    {
+        //map is similar to a dictionary or hash
+
+        //instantiates httpclient to make request
+        DefaultHttpClient httpclient = new DefaultHttpClient();
+
+        //url with the post data
+        HttpPost httpost = new HttpPost(path);
+
+
+
+        //passes the results to a string builder/entity
+        //StringEntity se = new StringEntity(params.toString());
+
+        //sets the post request as the resulting string
+        //httpost.setEntity(se);
+        httpost.setEntity(new UrlEncodedFormEntity(params));
+         
+        //sets a request header so the page receving the request will know what to do with it
+        //httpost.setHeader("Accept", "application/json");
+        //httpost.setHeader("Content-type", "application/json");
+
+        //Handles what is returned from the page 
+        Log.d("ha", "sending http");
+        HttpResponse response = httpclient.execute(httpost);
+        return response;
+    }
+    
+    private String getAccountName() {
+    	String result = new String("Holder");
+    	
+    	Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
+    	Account[] accounts = AccountManager.get(getBaseContext()).getAccounts();
+    	for (Account account : accounts) {
+    	    if (emailPattern.matcher(account.name).matches()) {
+    	         result = account.name;
+    	    }
+    	}
+    	Log.d("ha", "AccountName: " + result);
+    	return result;
+    }
+    
     public void onEndOfResults(ArrayList<String> res) {
     	
     	if (mRunning == true) {
@@ -124,6 +191,22 @@ public class MainActivity extends Activity implements OnClickListener {
     		mResults.add(res.get(0));
     		mList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
     				mResults));
+    		
+    		try {
+    			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);  
+    			nameValuePairs.add(new BasicNameValuePair("speaker", mUser));  
+    			nameValuePairs.add(new BasicNameValuePair("text", res.get(0))); 
+    			/*JSONObject data = new JSONObject();
+    			data.put("speaker", mUser);
+    			data.put("text", res.get(0));*/
+    			String path = "http://spchbrd.appspot.com/speech";
+    			HttpResponse response = makeRequest(path, nameValuePairs);
+    			
+    			Log.d("ha", "response result: " + response.toString());
+    		}
+    		catch  (Exception e){
+    			Log.d("ha", "Failed Send " + e.getMessage());
+    		}
     		
     	}
     }
