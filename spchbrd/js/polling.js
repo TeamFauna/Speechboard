@@ -1,9 +1,10 @@
 function Poller(interval, callback) {
   function poll() {
-    json = $.getJSON('/speech');
-    if (json.length > 0) {
-      callback(json);
-    }
+    json = $.get('/speech', function(data) {
+      if (json.length > 0) {
+        callback(json);
+      }
+    });
   }
 
   this.start = function() {
