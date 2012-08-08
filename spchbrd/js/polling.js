@@ -4,7 +4,8 @@ function Poller(interval, callback) {
     req.open("GET", "/speech", false);
     req.send();
     console.log(req);
-    callback(req.responseText);
+    var json = JSON.parse(req.responseText);
+    callback(json);
   }
 
   this.start = function() {
@@ -15,8 +16,8 @@ function Poller(interval, callback) {
 }
 
 function startPolling(div) {
-  function display(text) {
-    div.innerHTML += text + '<br>';
+  function display(json) {
+    div.innerHTML += json + '<br>';
   }
 
   var poller = new Poller(1000, display);
