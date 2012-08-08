@@ -15,10 +15,29 @@
 # limitations under the License.
 #
 import webapp2
+import jinja2
+import os
+from google.appengine.ext import db
+
+templates = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+    
+    
+class Fragment(db.Model):
+      """Models an individual Guestbook entry with an author, content, and date."""
+      speaker = db.StringProperty()
+      content = db.StringProperty(multiline=True)
+      time_stamp = db.DateTimeProperty(auto_now_add=True)
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.out.write('Hello world!')
+        template = templates.get_template('index.html')
+        self.response.out.write(template.render({})) #we have no template vars yet
+        
+class SpeechHander(webapp2.RequestHandler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/json'
+        self.response.out.write("implementing this!")
 
-app = webapp2.WSGIApplication([('/', MainHandler)],
+app = webapp2.WSGIApplication([('/', MainHandler), ("/speech", SpeechHandler)],
                               debug=True)
