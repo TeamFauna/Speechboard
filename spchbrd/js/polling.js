@@ -8,7 +8,7 @@ function Poller(interval, callback) {
     console.log(req);
     var json = JSON.parse(req.responseText);
     if (json && json.length) {
-      this.id = json[json.length].id;
+      this.id = json[json.length-1].id;
       callback(json);
     }
   }
