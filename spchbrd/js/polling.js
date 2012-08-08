@@ -1,12 +1,11 @@
 function Poller(interval, callback) {
-  this.id = -1;
+  var id_ = -1;
 
   function poll() {
     var req = new XMLHttpRequest();
-    var id = this.id < 0 ? 0 : this.id;
+    var id = id_ < 0 ? 0 : id_;
     req.open("GET", "/speech?id=" + id, false);
     req.send();
-    console.log(req);
 
     var json = JSON.parse(req.responseText);
     if (!json || json.length == 0) {
@@ -15,9 +14,9 @@ function Poller(interval, callback) {
 
     for (var i = 0; i < json.length; i++) {
       var id = json[i].id;
-      if (id > this.id) {
+      if (id > id_) {
         callback(json[i]);
-        this.id = id;
+        id_ = id;
       }
     }
   }
@@ -25,8 +24,6 @@ function Poller(interval, callback) {
   this.start = function() {
     setInterval(poll, interval);
   };
-
-  this.poll = poll;
 }
 
 var emailToImg = {
@@ -57,6 +54,7 @@ function CreateTextBox(speaker, text) {
 
 function startPolling(div) {
   function display(json) {
+    console.log(json);
     var speaker = json.speaker;
     var text = json.text;
     div.appendChild(CreateTextBox(speaker, text));
