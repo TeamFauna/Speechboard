@@ -13,7 +13,7 @@ function Poller(interval, callback) {
     }
 
     for (var i = 0; i < json.length; i++) {
-      var id = json[i].id;
+      id = json[i].id;
       if (id > id_) {
         callback(json[i]);
         id_ = id;
@@ -22,6 +22,7 @@ function Poller(interval, callback) {
   }
 
   this.start = function() {
+    poll();
     setInterval(poll, interval);
   };
 }
