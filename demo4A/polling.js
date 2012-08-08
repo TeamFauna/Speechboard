@@ -1,5 +1,9 @@
 function Poller() {
 
+  function poll() {
+    json = $.getJson('/speech');
+    return json;
+  }
 }
 
 function startPolling(div) {
