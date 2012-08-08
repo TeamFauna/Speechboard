@@ -30,13 +30,13 @@ function Poller(interval, callback) {
 var emailToName = {
   'deadhead.russell@gmail.com': 'Russell',
   'zetalmac@gmail.com': 'Noah',
-  'Noah': 'Noah',
   'willhughes01@gmail.com': 'Will',
   'munnand@gmail.com': 'Munn'
 };
 
 function CreateAvatar(speaker) {
-  var path = 'img/' + emailToName[speaker] + '.jpg';
+  var name = emailToName[speaker] || speaker;
+  var path = 'img/' + name + '.jpg';
   var img = document.createElement('Img');
   img.src = path;
 
@@ -53,7 +53,8 @@ function CreateTextBox(speaker, text) {
 
   var speakerSpan = document.createElement('Span');
   speakerSpan.style.fontWeight = 'bold';
-  speakerSpan.appendChild(document.createTextNode(emailToName[speaker] + ':'));
+  var name = emailToName[speaker] || speaker;
+  speakerSpan.appendChild(document.createTextNode(name + ':'));
   boxDiv.appendChild(speakerSpan);
 
   var textSpan = document.createElement('Span');
