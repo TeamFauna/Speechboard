@@ -36,7 +36,7 @@ var emailToName = {
 };
 
 function CreateAvatar(speaker) {
-  var path = 'js/' + emailToName[speaker] + '.jpg';
+  var path = 'img/' + emailToName[speaker] + '.jpg';
   var img = document.createElement('Img');
   img.src = path;
 
