@@ -1,20 +1,25 @@
-function Poller() {
-
+function Poller(interval, callback) {
   function poll() {
-    json = $.getJson('/speech');
-    return json;
+    var req = new XMLHttpRequest();
+    req.open("GET", "/speech", false);
+    req.send();
+    console.log(req);
+    callback(req.responseText);
   }
+
+  this.start = function() {
+    setInterval(poll, interval);
+  };
+
+  this.poll = poll;
 }
 
 function startPolling(div) {
-  var poller = new Poller();
-
-  function update() {
-    text = poller.poll();
-    if (text.length > 0) {
-      div.innerHTML += text + '<br>';
-    }
+  function display(text) {
+    div.innerHTML += text + '<br>';
   }
 
-  setInterval(update, 1000);
+  var poller = new Poller(1000, display);
+  poller.start();
 }
+
