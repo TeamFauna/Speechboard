@@ -34,7 +34,7 @@ var emailToImg = {
 };
 
 function GetPicture(speaker) {
-  
+
 }
 
 function CreateTextBox(speaker, text) {
