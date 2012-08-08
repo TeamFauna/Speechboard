@@ -16,6 +16,7 @@
 #
 import webapp2
 import os
+import json
 from google.appengine.ext import db
 
 
@@ -24,8 +25,8 @@ from google.appengine.ext import db
 class Fragment(db.Model):
       """Models an individual Guestbook entry with an author, content, and date."""
       speaker = db.StringProperty()
-      content = db.StringProperty(multiline=True)
-      time_stamp = db.DateTimeProperty(auto_now_add=True)
+      text = db.StringProperty(multiline=True)
+      id = db.DateTimeProperty(auto_now_add=True)
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -34,7 +35,22 @@ class MainHandler(webapp2.RequestHandler):
 class SpeechHandler(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/json'
-        self.response.out.write("implementing this!")
+        #out = json.dumps()
+        out = '[{"speaker": "Noah","text": "I love poop","id": 3}]'
+        self.response.out.write(out)
+    def post(self):
+        self.response.headers['Content-Type'] = 'text/json'
+        raw_json = self.request.get("json")
+        try:
+            input = json.loads(raw_json)
+        except ValueError, error:
+            write_response(False, str(error))
+            return 
+        #convert json into database object  
+        write_response(True)
+        
+    def write_response(success, message=""):
+        self.response.out.write(json.dumps({"success": success, "message": message}))
 
 app = webapp2.WSGIApplication([('/', MainHandler), ("/speech", SpeechHandler)],
                               debug=True)
