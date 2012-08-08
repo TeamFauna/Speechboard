@@ -29,16 +29,26 @@ function Poller(interval, callback) {
 var emailToImg = {
   'deadhead.russell@gmail.com': 'russell',
   'zetalmac@gmail.com': 'noah',
+  'Noah': 'noah',
   'willhughes01@gmail.com': 'will',
   'munnand@gmail.com': 'munn'
 };
 
-function GetPicture(speaker) {
+function CreateAvatar(speaker) {
+  var path = 'js/' + emailToImg[speaker] + '.jpg';
+  var img = document.createElement('Img');
+  img.src = path;
 
+  img.style.width = '64px';
+
+  return img;
 }
 
 function CreateTextBox(speaker, text) {
   var boxDiv = document.createElement('Div');
+
+  var speakerImg = CreateAvatar(speaker);
+  boxDiv.appendChild(speakerImg);
 
   var speakerSpan = document.createElement('Span');
   speakerSpan.style.fontWeight = 'bold';
