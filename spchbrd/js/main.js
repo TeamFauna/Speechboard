@@ -1,5 +1,5 @@
 function init() {
-  var pollingDiv = document.createElement('Div');
+    var pollingDiv = document.getElementById("container");
   document.body.appendChild(pollingDiv);
 
   startPolling(pollingDiv);

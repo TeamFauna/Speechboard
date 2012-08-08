@@ -40,26 +40,33 @@ function CreateAvatar(speaker) {
   var img = document.createElement('Img');
   img.src = path;
 
-  img.style.width = '64px';
+  img.className = 'avatar';
 
   return img;
 }
 
 function CreateTextBox(speaker, text) {
   var boxDiv = document.createElement('Div');
+   boxDiv.className = 'box clearfix';
+
+    var rightDiv = document.createElement('Div');
+    rightDiv.className = 'rightdiv';
 
   var speakerImg = CreateAvatar(speaker);
   boxDiv.appendChild(speakerImg);
 
-  var speakerSpan = document.createElement('Span');
+  var speakerSpan = document.createElement('Div');
+    speakerSpan.className = 'speaker';
   speakerSpan.style.fontWeight = 'bold';
   speakerSpan.appendChild(document.createTextNode(speaker + ':'));
-  boxDiv.appendChild(speakerSpan);
+  rightDiv.appendChild(speakerSpan);
 
   var textSpan = document.createElement('Span');
+    textSpan.className = 'text';
   textSpan.appendChild(document.createTextNode(text));
-  boxDiv.appendChild(textSpan);
+  rightDiv.appendChild(textSpan);
 
+    boxDiv.appendChild(rightDiv);
   return boxDiv;
 }
 

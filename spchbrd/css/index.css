@@ -1,0 +1,52 @@
+H1 {
+    color: #67afc7;
+    font-family: Bitter, serif;
+    text-algin: center;
+    font-size: 38px;
+    margin: 0 auto;
+    margin-bottom: 12px;
+}
+
+#container {
+    width: 800px;
+    margin: 0 auto;
+}
+
+.box {
+  border: 1px solid #ccc;
+  padding: 5px;
+    width: 100%;
+
+  border-radius: 6px;
+  moz-border-radius: 6px;
+  webkit-border-radius: 6px;
+
+    moz-box-shadow: 2px 2px 2px #eee;
+    webkit-box-shadow: 2px 2px 2px #eee;
+    box-shadow: 2px 2px 2px #eee;
+}
+
+.rightdiv {
+    float: left;
+}
+
+.speaker {
+    font-size: 16px;
+    font-family: Bitter, serif;
+    margin-bottom: 6px;
+}
+
+.text {
+    font-family: Helvetica, sans-serif;
+}
+
+.avatar {
+    float: left;
+    width: 64px;
+    margin-right: 10px;
+
+  border-radius: 6px;
+  moz-border-radius: 6px;
+  webkit-border-radius: 6px;
+
+}
