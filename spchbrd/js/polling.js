@@ -1,6 +1,6 @@
 function Poller(interval, callback) {
   function poll() {
-    json = $.getJson('/speech');
+    json = $.getJSON('/speech');
     if (json.length > 0) {
       callback(json);
     }
