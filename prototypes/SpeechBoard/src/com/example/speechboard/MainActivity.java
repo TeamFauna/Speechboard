@@ -139,8 +139,9 @@ public class MainActivity extends Activity implements OnClickListener {
     
     
     
-    public static HttpResponse makeRequest(String path, List<NameValuePair> params)throws Exception 
+    public static HttpResponse makeRequest(String path, List<NameValuePair> params) throws Exception 
     {
+
         //map is similar to a dictionary or hash
 
         //instantiates httpclient to make request
@@ -154,9 +155,13 @@ public class MainActivity extends Activity implements OnClickListener {
         //passes the results to a string builder/entity
         //StringEntity se = new StringEntity(params.toString());
 
+        UrlEncodedFormEntity ram = new UrlEncodedFormEntity(params);
+        Log.d("ha", ram.toString());
+        Log.d("ha", path.toString());
+        
         //sets the post request as the resulting string
         //httpost.setEntity(se);
-        httpost.setEntity(new UrlEncodedFormEntity(params));
+        httpost.setEntity(ram);
          
         //sets a request header so the page receving the request will know what to do with it
         //httpost.setHeader("Accept", "application/json");
@@ -181,7 +186,7 @@ public class MainActivity extends Activity implements OnClickListener {
     	Log.d("ha", "AccountName: " + result);
     	return result;
     }
-    
+  
     public void onEndOfResults(ArrayList<String> res) {
     	
     	if (mRunning == true) {
@@ -192,21 +197,33 @@ public class MainActivity extends Activity implements OnClickListener {
     		mList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
     				mResults));
     		
-    		try {
-    			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);  
-    			nameValuePairs.add(new BasicNameValuePair("speaker", mUser));  
-    			nameValuePairs.add(new BasicNameValuePair("text", res.get(0))); 
-    			/*JSONObject data = new JSONObject();
-    			data.put("speaker", mUser);
-    			data.put("text", res.get(0));*/
-    			String path = "http://spchbrd.appspot.com/speech";
-    			HttpResponse response = makeRequest(path, nameValuePairs);
-    			
-    			Log.d("ha", "response result: " + response.toString());
-    		}
-    		catch  (Exception e){
-    			Log.d("ha", "Failed Send " + e.getMessage());
-    		}
+    		final String result = res.get(0);
+    		
+    		Thread thread = new Thread()
+    		{
+    		    @Override
+    		    public void run() {
+    		    	try {
+    	    			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);  
+    	    			nameValuePairs.add(new BasicNameValuePair("speaker", mUser));  
+    	    			nameValuePairs.add(new BasicNameValuePair("text", result	)); 
+    	    			/*JSONObject data = new JSONObject();
+    	    			data.put("speaker", mUser);
+    	    			data.put("text", res.get(0));*/
+    	    			String path = "http://spchbrd.appspot.com/speech";
+    	    			HttpResponse response = makeRequest(path, nameValuePairs);
+    	    			
+    	    			Log.d("ha", "response result: " + response.toString());
+    	    		}
+    	    		catch  (Exception e){
+    	    			Log.d("ha", "Failed Send " + e.getMessage() + e.toString());
+    	    		}             
+    		    }
+    		};
+    		
+    		thread.start();
+
+ 
     		
     	}
     }
