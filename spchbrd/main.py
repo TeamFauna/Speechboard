@@ -29,7 +29,15 @@ class Fragment(db.Model):
 class MainHandler(webapp2.RequestHandler):
     def get(self):
         self.response.out.write(open("index.html").read()) #we have no template vars yet
-        
+
+class  Nuke(webapp2.RequestHandler):
+    def get(self):
+        q = Fragment.all()
+        data = q.run(batch_size=1000)
+        for entity in data:
+            entity.delete()
+        self.response.out.write("deleted everything!!! like a bau5.")
+       
 class SpeechHandler(webapp2.RequestHandler):
     def get(self):
         if self.request.get("test"):
@@ -61,5 +69,5 @@ class SpeechHandler(webapp2.RequestHandler):
     def write_response(self, success, message=""):
         self.response.out.write(json.dumps({"success": success, "message": message}))
 
-app = webapp2.WSGIApplication([('/', MainHandler), ("/speech", SpeechHandler)],
+app = webapp2.WSGIApplication([('/', MainHandler), ("/speech", SpeechHandler), ("/nuke", Nuke)],
                               debug=True)
