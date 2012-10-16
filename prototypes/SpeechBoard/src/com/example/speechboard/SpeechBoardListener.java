@@ -7,6 +7,13 @@ import android.speech.RecognitionListener;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 
+/***
+ * 
+ * @author willhughes
+ * 
+ * This class handles the results from the sst mechanism
+ *
+ */
 public class SpeechBoardListener implements RecognitionListener {
 
 	private MainActivity mAct;
@@ -40,28 +47,13 @@ public class SpeechBoardListener implements RecognitionListener {
 	}
 
 	public void onEvent(int eventType, Bundle params) {
-		// TODO Auto-generated method stub
-		//Log.d("ha", "onEvent");
+		// Current doesn't do anything
 
 	}
 
 	public void onPartialResults(Bundle partialResults) {
-		// TODO Auto-generated method stub
-
-		/*Log.d("ha", "onPartialResults");
-		if(partialResults != null){
-			ArrayList<String> res = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-			
-			if (res != null){
-				Log.d("ha", "PartialResults: " + res.toString());
-			}
-			else {
-				Log.d("ha", "pr res is null");
-			}
-		}
-		else {
-			Log.d("ha", "pr is null");
-		}*/
+		// Partial Results don't always return from google
+		// If needed find a workaround.
 	}
 
 	public void onReadyForSpeech(Bundle params) {
